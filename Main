@@ -1,0 +1,92 @@
+package com.example.pais
+
+import android.content.Intent
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.widget.Adapter
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.ListView
+import android.widget.TextView
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+
+class MainActivity : AppCompatActivity() {
+
+    val comidapais = arrayOf(
+        "Paella-España",
+        "Sushi-Japón",
+        "Tacos-México",
+        "Ceviche-Perú",
+        "Pizza-Italia",
+        "Curry-India",
+        "Moussaka-Grecia",
+        "Feijoada-Brasil",
+        "Poutine-Canadá",
+        "Bobotie-Sudáfrica"
+    )
+
+    val fotocomida = arrayOf(
+        R.drawable.pati,
+        R.drawable.chuchi,
+        R.drawable.taco,
+        R.drawable.cevi,
+        R.drawable.pizza,
+        R.drawable.curry,
+        R.drawable.mous,
+        R.drawable.feij,
+        R.drawable.pou,
+        R.drawable.bob
+    )
+
+    val descripcion = arrayOf(
+        "Un plato tradicional español a base de arroz, cocido con azafrán, mariscos frescos, pollo, conejo o verduras, típico de la región de Valencia.",
+        "Bocados pequeños hechos de arroz avinagrado, acompañados de pescado crudo, mariscos, y otros ingredientes como algas y vegetales.",
+        "Tortillas de maíz o harina rellenas de diferentes tipos de carnes, como carne asada, pastor o barbacoa, además de guacamole, salsa y otros acompañamientos.",
+        "Pescado o mariscos crudos marinados en jugo de limón, mezclados con cebolla, ají, cilantro, y acompañados de camote o maíz.",
+        "Masa horneada cubierta con salsa de tomate, queso mozzarella y una variedad de ingredientes como pepperoni, champiñones o aceitunas.",
+        "Un guiso de especias aromáticas cocido con carne o verduras, a menudo acompañado de arroz o pan plano como el naan.",
+        "Un pastel en capas hecho de berenjenas, carne de cordero o res, y cubierto con salsa bechamel y queso, horneado hasta dorarse.",
+        "Guiso de frijoles negros cocido con diferentes partes de cerdo, como costillas y salchichas, servido con arroz, naranjas y farofa (un tipo de harina)",
+        "Papas fritas crujientes cubiertas con queso en grano y salsa espesa de carne, un platillo típico de Quebec.",
+        "Un pastel de carne picada especiada, cocida al horno con una capa de huevo, mezclado con sabores agridulces como curry, pasas y chutney."
+    )
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContentView(R.layout.activity_main)
+
+        val lista = findViewById<ListView>(R.id.Lista)
+        val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, comidapais)
+        lista.adapter = adapter
+
+        lista.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+            val dial = LayoutInflater.from(this).inflate(R.layout.layoutcomida, null)
+            val imagen = dial.findViewById<ImageView>(R.id.imagenComida)
+            val descr = dial.findViewById<TextView>(R.id.descripcion)
+
+            imagen.setImageResource(fotocomida[position])
+            descr.text=descripcion[position]
+
+            val builder = AlertDialog.Builder(this)
+            builder.setView(dial)
+                .setNegativeButton("Cerrar") { dialog, _ -> dialog.dismiss() }
+                .setPositiveButton("Compartir"){parent,view,  -> val intent=Intent().apply {
+                    action=Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT,"Enviar con")
+                    type="text/plain"
+                    }
+                    startActivity(Intent.createChooser(intent,null))
+                }
+                .show()
+
+
+        }
+    }
+}
